@@ -50,6 +50,11 @@ namespace Kogane.Internal
         /// </summary>
         private void OnGUI()
         {
+            if ( BookmarkSaveData.instance.Refresh() )
+            {
+                ReloadTreeView();
+            }
+
             using ( new EditorGUILayout.HorizontalScope() )
             {
                 DrawAddAssetButton();

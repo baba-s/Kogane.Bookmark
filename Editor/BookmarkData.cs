@@ -25,9 +25,14 @@ namespace Kogane.Internal
         //==============================================================================
         // プロパティ
         //==============================================================================
-        public string Guid    => m_guid;
-        public bool   IsValid => !string.IsNullOrWhiteSpace( m_guid );
-        public string Name    => IsValid ? Asset.name : string.Empty;
+        public string Guid => m_guid;
+
+        public bool IsValid =>
+            !string.IsNullOrWhiteSpace( m_guid ) &&
+            !string.IsNullOrWhiteSpace( AssetPath ) &&
+            AssetDatabase.LoadAssetAtPath<Object>( AssetPath ) != null;
+
+        public string Name => IsValid ? Asset.name : string.Empty;
 
         public Object Asset
         {

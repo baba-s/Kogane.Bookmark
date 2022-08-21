@@ -57,5 +57,28 @@ namespace Kogane.Internal
             var index = m_list.FindIndex( x => x.Guid == data.Guid );
             m_list.RemoveAt( index );
         }
+
+        public bool Refresh()
+        {
+            var isRefresh = false;
+
+            for ( var i = m_list.Count - 1; i >= 0; i-- )
+            {
+                var data = m_list[ i ];
+
+                if ( !data.IsValid )
+                {
+                    m_list.RemoveAt( i );
+                    isRefresh = true;
+                }
+            }
+
+            if ( isRefresh )
+            {
+                Save();
+            }
+
+            return isRefresh;
+        }
     }
 }
