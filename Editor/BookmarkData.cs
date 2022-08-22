@@ -10,12 +10,15 @@ namespace Kogane.Internal
     /// ブックマークの項目を管理するクラス
     /// </summary>
     [Serializable]
-    internal sealed class BookmarkData : TreeViewItem
+    internal sealed class BookmarkData
+        : TreeViewItem,
+          ISerializationCallbackReceiver
     {
         //==============================================================================
         // 変数(SerializeField)
         //==============================================================================
         [SerializeField] private string m_guid;
+        [SerializeField] private int    m_id;
 
         //==============================================================================
         // 変数
@@ -61,6 +64,22 @@ namespace Kogane.Internal
         public BookmarkData( int id, string guid ) : base( id )
         {
             m_guid = guid;
+        }
+
+        /// <summary>
+        /// シリアライズされる前に呼び出されます
+        /// </summary>
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
+        {
+            m_id = id;
+        }
+
+        /// <summary>
+        /// デシリアライズされた後に呼び出されます
+        /// </summary>
+        void ISerializationCallbackReceiver.OnAfterDeserialize()
+        {
+            id = m_id;
         }
     }
 }

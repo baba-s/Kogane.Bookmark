@@ -58,6 +58,9 @@ namespace Kogane.Internal
             m_list.RemoveAt( index );
         }
 
+        /// <summary>
+        /// 削除されたアセットをリストから削除します
+        /// </summary>
         public bool Refresh()
         {
             var isRefresh = false;
