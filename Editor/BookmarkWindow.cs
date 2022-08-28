@@ -219,7 +219,7 @@ namespace Kogane.Internal
         /// <summary>
         /// 開きます
         /// </summary>
-        [MenuItem( "Window/Bookmark" )]
+        [MenuItem( "Window/Kogane/Bookmark" )]
         private static void Open()
         {
             GetWindow<BookmarkWindow>( "Bookmark" );
