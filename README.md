@@ -4,9 +4,9 @@
 
 ## 使い方
 
-![2022-08-21_185458](https://user-images.githubusercontent.com/6134875/185785676-a45b37dd-55ba-4318-8794-6a65681e5363.png)
+![2022-08-28_094654](https://user-images.githubusercontent.com/6134875/187053003-1d4972c4-706e-40b3-ba8a-93332b71abf6.png)
 
-Unity メニューの「Window > Bookmark」を押すと
+Unity メニューの「Window > Kogane > Bookmark」を押すと
 
 ![2022-08-21_185519](https://user-images.githubusercontent.com/6134875/185785680-166f4dd7-b5f9-42bb-a98e-ac38b400ea7c.png)
 
