@@ -79,28 +79,17 @@ namespace Kogane.Internal
         /// </summary>
         private void DrawAddAssetButton()
         {
-            var singleLineHeight = EditorGUIUtility.singleLineHeight;
-
             var rect = new Rect
             {
                 x      = 0,
                 y      = 0,
                 width  = position.width / 3,
-                height = singleLineHeight - 1
+                height = EditorGUIUtility.singleLineHeight - 1
             };
 
-            var current   = Event.current;
-            var controlId = GUIUtility.GetControlID( FocusType.Passive );
+            GUILayout.Box( "Drag Here", EditorStyles.toolbarButton, GUILayout.Width( rect.width ) );
 
-            if ( GUILayout.Button( "Add Asset", EditorStyles.toolbarButton, GUILayout.Width( rect.width ) ) )
-            {
-                var filePath  = EditorUtility.OpenFilePanel( "Bookmark", "", "" );
-                var assetPath = FileUtil.GetProjectRelativePath( filePath );
-
-                AddBookmark( assetPath );
-
-                ReloadTreeView();
-            }
+            var current = Event.current;
 
             switch ( current.type )
             {
@@ -110,7 +99,7 @@ namespace Kogane.Internal
                     if ( !rect.Contains( current.mousePosition ) ) break;
 
                     DragAndDrop.visualMode      = DragAndDropVisualMode.Copy;
-                    DragAndDrop.activeControlID = controlId;
+                    DragAndDrop.activeControlID = GUIUtility.GetControlID( FocusType.Passive );
 
                     if ( current.type == EventType.DragPerform )
                     {
