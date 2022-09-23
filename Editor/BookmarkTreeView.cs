@@ -120,6 +120,7 @@ namespace Kogane.Internal
         protected override bool DoesItemMatchSearch( TreeViewItem treeViewItem, string search )
         {
             if ( treeViewItem is not BookmarkTreeViewItem item ) return false;
+            if ( string.IsNullOrEmpty( search ) ) return true;
 
             return item.Name.IndexOf( search, StringComparison.OrdinalIgnoreCase ) != -1;
         }
