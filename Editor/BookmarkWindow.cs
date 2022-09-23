@@ -15,12 +15,25 @@ namespace Kogane.Internal
         //==============================================================================
         private const string SEARCH_STRING_STATE_KEY = "BookmarkWindow_SearchString";
 
+        //==============================================================================
+        // 定数(static readonly)
+        //==============================================================================
+        private static readonly GUILayoutOption   WIDTH_OPTION  = GUILayout.Width( 16 );
+        private static readonly GUILayoutOption   HEIGHT_OPTION = GUILayout.Height( EditorGUIUtility.singleLineHeight );
+        private static readonly GUILayoutOption[] OPTIONS       = { WIDTH_OPTION, HEIGHT_OPTION };
+
         //================================================================================
         // 変数
         //================================================================================
         private SearchField      m_searchField;
         private BookmarkHeader   m_header;
         private BookmarkTreeView m_treeView;
+
+        //================================================================================
+        // 変数(static)
+        //================================================================================
+        private static GUIContent m_refreshIcon;
+        private static GUIContent m_settingIcon;
 
         //================================================================================
         // 関数
@@ -107,8 +120,10 @@ namespace Kogane.Internal
 
                         foreach ( var draggedObject in DragAndDrop.objectReferences )
                         {
-                            var path = AssetDatabase.GetAssetPath( draggedObject );
-                            AddBookmark( path );
+                            var assetPath = AssetDatabase.GetAssetPath( draggedObject );
+                            var asset     = AssetDatabase.LoadAssetAtPath<Object>( assetPath );
+
+                            BookmarkSetting.instance.Add( asset );
                         }
 
                         ReloadTreeView();
@@ -123,18 +138,13 @@ namespace Kogane.Internal
 
         private void DrawRefreshButton()
         {
-            const string name = "d_Refresh";
+            m_refreshIcon ??= EditorGUIUtility.IconContent( "d_Refresh" );
 
-            var icon             = EditorGUIUtility.IconContent( name );
-            var singleLineHeight = EditorGUIUtility.singleLineHeight;
-            var widthOption      = GUILayout.Width( 16 );
-            var heightOption     = GUILayout.Height( singleLineHeight );
-
-            using var scope = new EditorGUILayout.VerticalScope( widthOption, heightOption );
+            using var scope = new EditorGUILayout.VerticalScope( OPTIONS );
 
             GUILayout.FlexibleSpace();
 
-            if ( GUILayout.Button( icon, EditorStyles.iconButton ) )
+            if ( GUILayout.Button( m_refreshIcon, EditorStyles.iconButton ) )
             {
                 ReloadTreeView();
             }
@@ -144,39 +154,18 @@ namespace Kogane.Internal
 
         private static void DrawSettingButton()
         {
-            const string name = "d_SettingsIcon";
+            m_settingIcon ??= EditorGUIUtility.IconContent( "d_SettingsIcon" );
 
-            var icon             = EditorGUIUtility.IconContent( name );
-            var singleLineHeight = EditorGUIUtility.singleLineHeight;
-            var widthOption      = GUILayout.Width( 16 );
-            var heightOption     = GUILayout.Height( singleLineHeight );
-
-            using var scope = new EditorGUILayout.VerticalScope( widthOption, heightOption );
+            using var scope = new EditorGUILayout.VerticalScope( OPTIONS );
 
             GUILayout.FlexibleSpace();
 
-            if ( GUILayout.Button( icon, EditorStyles.iconButton ) )
+            if ( GUILayout.Button( m_settingIcon, EditorStyles.iconButton ) )
             {
                 SettingsService.OpenProjectSettings( BookmarkSettingProvider.PATH );
             }
 
             GUILayout.FlexibleSpace();
-        }
-
-        /// <summary>
-        /// ブックマークを追加します
-        /// </summary>
-        private static void AddBookmark( string assetPath )
-        {
-            var guid = AssetDatabase.AssetPathToGUID( assetPath );
-
-            if ( string.IsNullOrWhiteSpace( guid ) ) return;
-
-            var asset = AssetDatabase.LoadAssetAtPath<Object>( assetPath );
-
-            if ( asset == null ) return;
-
-            BookmarkSetting.instance.Add( asset );
         }
 
         /// <summary>
@@ -196,13 +185,13 @@ namespace Kogane.Internal
         /// </summary>
         private void DrawSearchField()
         {
-            using var checkScope = new EditorGUI.ChangeCheckScope();
+            using var scope = new EditorGUI.ChangeCheckScope();
 
             if ( m_treeView == null ) return;
 
             var searchString = m_searchField.OnToolbarGUI( m_treeView.searchString );
 
-            if ( !checkScope.changed ) return;
+            if ( !scope.changed ) return;
 
             SessionState.SetString( SEARCH_STRING_STATE_KEY, searchString );
             m_treeView.searchString = searchString;
