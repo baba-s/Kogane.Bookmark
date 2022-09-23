@@ -12,12 +12,10 @@ namespace Kogane.Internal
         //==============================================================================
         // プロパティ
         //==============================================================================
-        public Object Asset { get; }
-
-        public bool   IsValid   => Asset != null;
-        public string Name      => IsValid ? Asset.name : string.Empty;
-        public string AssetPath => AssetDatabase.GetAssetPath( Asset );
-        public bool   IsFolder  => AssetDatabase.IsValidFolder( AssetPath );
+        public Object Asset    { get; }
+        public bool   IsValid  { get; }
+        public string Name     { get; }
+        public bool   IsFolder { get; }
 
         //==============================================================================
         // 関数
@@ -27,7 +25,12 @@ namespace Kogane.Internal
         /// </summary>
         public BookmarkTreeViewItem( int id, Object asset ) : base( id )
         {
-            Asset = asset;
+            var assetPath = AssetDatabase.GetAssetPath( asset );
+
+            Asset    = asset;
+            IsValid  = Asset != null;
+            Name     = IsValid ? Asset.name : string.Empty;
+            IsFolder = AssetDatabase.IsValidFolder( assetPath );
         }
     }
 }
