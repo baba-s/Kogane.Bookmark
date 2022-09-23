@@ -43,11 +43,13 @@ namespace Kogane.Internal
             m_searchField.downOrUpArrowKeyPressed += m_treeView.SetFocusAndEnsureSelectedItem;
 
             BookmarkSetting.OnChanged += OnChanged;
+            Undo.undoRedoPerformed    += OnChanged;
         }
 
         private void OnDisable()
         {
             BookmarkSetting.OnChanged -= OnChanged;
+            Undo.undoRedoPerformed    -= OnChanged;
         }
 
         private void OnChanged()
