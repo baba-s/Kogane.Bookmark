@@ -39,10 +39,20 @@ namespace Kogane.Internal
                 searchString = SessionState.GetString( SEARCH_STRING_STATE_KEY, string.Empty )
             };
 
-            m_treeView.OnReload += ReloadTreeView;
-
             m_searchField                         =  new SearchField();
             m_searchField.downOrUpArrowKeyPressed += m_treeView.SetFocusAndEnsureSelectedItem;
+
+            BookmarkSetting.OnChanged += OnChanged;
+        }
+
+        private void OnDisable()
+        {
+            BookmarkSetting.OnChanged -= OnChanged;
+        }
+
+        private void OnChanged()
+        {
+            m_treeView.Reload();
         }
 
         /// <summary>
@@ -50,15 +60,12 @@ namespace Kogane.Internal
         /// </summary>
         private void OnGUI()
         {
-            if ( BookmarkSaveData.instance.Refresh() )
-            {
-                ReloadTreeView();
-            }
-
             using ( new EditorGUILayout.HorizontalScope() )
             {
                 DrawAddAssetButton();
                 DrawSearchField();
+                DrawRefreshButton();
+                DrawSettingButton();
             }
 
             DrawTreeView();
@@ -123,6 +130,48 @@ namespace Kogane.Internal
             }
         }
 
+        private void DrawRefreshButton()
+        {
+            const string name = "d_Refresh";
+
+            var icon             = EditorGUIUtility.IconContent( name );
+            var singleLineHeight = EditorGUIUtility.singleLineHeight;
+            var widthOption      = GUILayout.Width( 16 );
+            var heightOption     = GUILayout.Height( singleLineHeight );
+
+            using var scope = new EditorGUILayout.VerticalScope( widthOption, heightOption );
+
+            GUILayout.FlexibleSpace();
+
+            if ( GUILayout.Button( icon, EditorStyles.iconButton ) )
+            {
+                ReloadTreeView();
+            }
+
+            GUILayout.FlexibleSpace();
+        }
+
+        private static void DrawSettingButton()
+        {
+            const string name = "d_SettingsIcon";
+
+            var icon             = EditorGUIUtility.IconContent( name );
+            var singleLineHeight = EditorGUIUtility.singleLineHeight;
+            var widthOption      = GUILayout.Width( 16 );
+            var heightOption     = GUILayout.Height( singleLineHeight );
+
+            using var scope = new EditorGUILayout.VerticalScope( widthOption, heightOption );
+
+            GUILayout.FlexibleSpace();
+
+            if ( GUILayout.Button( icon, EditorStyles.iconButton ) )
+            {
+                SettingsService.OpenProjectSettings( BookmarkSettingProvider.PATH );
+            }
+
+            GUILayout.FlexibleSpace();
+        }
+
         /// <summary>
         /// ブックマークを追加します
         /// </summary>
@@ -131,14 +180,12 @@ namespace Kogane.Internal
             var guid = AssetDatabase.AssetPathToGUID( assetPath );
 
             if ( string.IsNullOrWhiteSpace( guid ) ) return;
-            if ( BookmarkSaveData.instance.Contains( guid ) ) return;
 
-            var list = BookmarkSaveData.instance.List;
-            var id   = list.Count <= 0 ? 1 : BookmarkSaveData.instance.List.Max( x => x.id ) + 1;
-            var item = new BookmarkData( id, guid );
+            var asset = AssetDatabase.LoadAssetAtPath<Object>( assetPath );
 
-            BookmarkSaveData.instance.Add( item );
-            BookmarkSaveData.instance.Save();
+            if ( asset == null ) return;
+
+            BookmarkSetting.instance.Add( asset );
         }
 
         /// <summary>
@@ -195,12 +242,12 @@ namespace Kogane.Internal
         {
             if ( Event.current.type != EventType.MouseDrag ) return;
 
+            var array = BookmarkSetting.instance.ToArray();
+
             var selectedPrefabs = m_treeView
                     .GetSelection()
-                    .Select( x => BookmarkSaveData.instance.List.FirstOrDefault( y => y.id == x ) )
+                    .Select( x => array[ x ] )
                     .Where( x => x != null )
-                    .Where( x => x.IsValid )
-                    .Select( x => x.Asset )
                     .ToArray()
                 ;
 

@@ -16,23 +16,18 @@ namespace Kogane.Internal
         //==============================================================================
         private enum ColumnType
         {
-            NAME,
-            OPEN,
             PING,
-            REMOVE,
+            NAME,
         }
 
         // 要素が存在しない場合、 TreeView は例外を発生する
         // そのため、要素が存在しない場合は表示しないダミーデータを追加する
-        private static BookmarkData[] List =>
-            BookmarkSaveData.instance.List
-                .DefaultIfEmpty( new BookmarkData( 0, null ) )
+        private static BookmarkTreeViewItem[] List =>
+            BookmarkSetting.instance
+                .Where( x => x != null )
+                .Select( ( x, index ) => new BookmarkTreeViewItem( index, x ) )
+                .DefaultIfEmpty( new BookmarkTreeViewItem( 0, null ) )
                 .ToArray();
-
-        //==============================================================================
-        // イベント
-        //==============================================================================
-        public Action OnReload;
 
         //==============================================================================
         // 関数
@@ -75,7 +70,7 @@ namespace Kogane.Internal
         /// </summary>
         protected override void RowGUI( RowGUIArgs args )
         {
-            if ( !( args.item is BookmarkData item ) || !item.IsValid ) return;
+            if ( !( args.item is BookmarkTreeViewItem item ) || !item.IsValid ) return;
 
             var asset   = item.Asset;
             var columns = args.GetNumVisibleColumns();
@@ -87,39 +82,21 @@ namespace Kogane.Internal
 
                 switch ( columnIndex )
                 {
-                    case ColumnType.NAME:
-                        EditorGUIUtility.SetIconSize( new Vector2( 16, 16 ) );
-                        var label = EditorGUIUtility.ObjectContent( asset, null );
-                        EditorGUI.LabelField( rect, label );
-                        break;
-
                     case ColumnType.PING:
-                        if ( GUI.Button( rect, "ping", EditorStyles.miniButton ) )
+                        var name = "eyeDropper.Large";
+                        var icon = EditorGUIUtility.IconContent( name );
+
+                        if ( GUI.Button( rect, icon.image, EditorStyles.iconButton ) )
                         {
                             EditorGUIUtility.PingObject( asset );
                         }
 
                         break;
 
-                    case ColumnType.OPEN:
-                        using ( new EditorGUI.DisabledScope( item.IsFolder ) )
-                        {
-                            if ( GUI.Button( rect, "open", EditorStyles.miniButton ) )
-                            {
-                                AssetDatabase.OpenAsset( asset );
-                            }
-                        }
-
-                        break;
-
-                    case ColumnType.REMOVE:
-                        if ( GUI.Button( rect, "x", EditorStyles.miniButton ) )
-                        {
-                            BookmarkSaveData.instance.Remove( item );
-                            BookmarkSaveData.instance.Save();
-                            OnReload?.Invoke();
-                        }
-
+                    case ColumnType.NAME:
+                        EditorGUIUtility.SetIconSize( new Vector2( 16, 16 ) );
+                        var label = EditorGUIUtility.ObjectContent( asset, null );
+                        EditorGUI.LabelField( rect, label );
                         break;
                 }
             }
@@ -130,11 +107,9 @@ namespace Kogane.Internal
         /// </summary>
         protected override bool DoesItemMatchSearch( TreeViewItem treeViewItem, string search )
         {
-            if ( !( treeViewItem is BookmarkData item ) ) return false;
+            if ( treeViewItem is not BookmarkTreeViewItem item ) return false;
 
-            var name = item.Name;
-
-            return name.IndexOf( search, StringComparison.OrdinalIgnoreCase ) != -1;
+            return item.Name.IndexOf( search, StringComparison.OrdinalIgnoreCase ) != -1;
         }
 
         /// <summary>
@@ -143,21 +118,9 @@ namespace Kogane.Internal
         private void SortItems( MultiColumnHeader header )
         {
             var ascending = header.IsSortedAscending( header.sortedColumnIndex );
+            var list      = ascending ? List : List.Reverse();
 
-            var ordered = List
-                    .OrderBy( x => !x.IsFolder )
-                    .ThenBy( x => x.Name )
-                    .ThenBy( x => x.id )
-                ;
-
-            var items = ordered.AsEnumerable();
-
-            if ( !ascending )
-            {
-                items = items.Reverse();
-            }
-
-            rootItem.children = items
+            rootItem.children = list
                     .Cast<TreeViewItem>()
                     .ToList()
                 ;
