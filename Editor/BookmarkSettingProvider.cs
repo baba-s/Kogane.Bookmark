@@ -33,9 +33,12 @@ namespace Kogane.Internal
         {
             using var changeCheckScope = new EditorGUI.ChangeCheckScope();
 
+            var instance = BookmarkSetting.instance;
+            var oldCount = instance.Count;
+
             m_editor.OnInspectorGUI();
 
-            if ( !changeCheckScope.changed ) return;
+            if ( !changeCheckScope.changed && oldCount == instance.Count ) return;
 
             BookmarkSetting.instance.Save();
         }
