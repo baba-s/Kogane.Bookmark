@@ -187,8 +187,6 @@ namespace Kogane.Internal
         {
             using var scope = new EditorGUI.ChangeCheckScope();
 
-            if ( m_treeView == null ) return;
-
             var searchString = m_searchField.OnToolbarGUI( m_treeView.searchString );
 
             if ( !scope.changed ) return;
@@ -222,11 +220,9 @@ namespace Kogane.Internal
         {
             if ( Event.current.type != EventType.MouseDrag ) return;
 
-            var array = BookmarkSetting.instance.ToArray();
-
             var selectedPrefabs = m_treeView
                     .GetSelection()
-                    .Select( x => array[ x ] )
+                    .Select( x => BookmarkSetting.instance[ x ] )
                     .Where( x => x != null )
                     .ToArray()
                 ;

@@ -14,6 +14,8 @@ namespace Kogane.Internal
     {
         [SerializeField] private List<Object> m_list = new();
 
+        public Object this[ int index ] => m_list[ index ];
+
         public int Count => m_list.Count;
 
         public static Action OnChanged { get; set; }
