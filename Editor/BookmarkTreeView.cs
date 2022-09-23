@@ -20,14 +20,7 @@ namespace Kogane.Internal
             NAME,
         }
 
-        // 要素が存在しない場合、 TreeView は例外を発生する
-        // そのため、要素が存在しない場合は表示しないダミーデータを追加する
-        private static BookmarkTreeViewItem[] List =>
-            BookmarkSetting.instance
-                .Where( x => x != null )
-                .Select( ( x, index ) => new BookmarkTreeViewItem( index, x ) )
-                .DefaultIfEmpty( new BookmarkTreeViewItem( 0, null ) )
-                .ToArray();
+        private BookmarkTreeViewItem[] m_list;
 
         //==============================================================================
         // 関数
@@ -55,9 +48,17 @@ namespace Kogane.Internal
         /// </summary>
         protected override TreeViewItem BuildRoot()
         {
+            // 要素が存在しない場合、 TreeView は例外を発生する
+            // そのため、要素が存在しない場合は表示しないダミーデータを追加する
+            m_list = BookmarkSetting.instance
+                .Where( x => x != null )
+                .Select( ( x, index ) => new BookmarkTreeViewItem( index, x ) )
+                .DefaultIfEmpty( new BookmarkTreeViewItem( 0, null ) )
+                .ToArray();
+
             var root = new TreeViewItem { depth = -1 };
 
-            foreach ( var n in List )
+            foreach ( var n in m_list )
             {
                 root.AddChild( n );
             }
@@ -118,7 +119,7 @@ namespace Kogane.Internal
         private void SortItems( MultiColumnHeader header )
         {
             var ascending = header.IsSortedAscending( header.sortedColumnIndex );
-            var list      = ascending ? List : List.Reverse();
+            var list      = ascending ? m_list : m_list.Reverse();
 
             rootItem.children = list
                     .Cast<TreeViewItem>()
@@ -133,7 +134,7 @@ namespace Kogane.Internal
         /// </summary>
         protected override void DoubleClickedItem( int id )
         {
-            var bookmarkData = List.FirstOrDefault( x => x.id == id );
+            var bookmarkData = m_list.FirstOrDefault( x => x.id == id );
 
             if ( bookmarkData == null ) return;
 
