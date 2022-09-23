@@ -14,12 +14,18 @@ namespace Kogane.Internal
         //==============================================================================
         // 列挙型
         //==============================================================================
+        /// <summary>
+        /// 列の種類
+        /// </summary>
         private enum ColumnType
         {
             PING,
             NAME,
         }
 
+        //==============================================================================
+        // 変数
+        //==============================================================================
         private BookmarkTreeViewItem[] m_list;
 
         //==============================================================================
@@ -51,16 +57,17 @@ namespace Kogane.Internal
             // 要素が存在しない場合、 TreeView は例外を発生する
             // そのため、要素が存在しない場合は表示しないダミーデータを追加する
             m_list = BookmarkSetting.instance
-                .Where( x => x != null )
-                .Select( ( x, index ) => new BookmarkTreeViewItem( index, x ) )
-                .DefaultIfEmpty( new BookmarkTreeViewItem( 0, null ) )
-                .ToArray();
+                    .Where( x => x != null )
+                    .Select( ( x, index ) => new BookmarkTreeViewItem( index, x ) )
+                    .DefaultIfEmpty( new BookmarkTreeViewItem( 0, null ) )
+                    .ToArray()
+                ;
 
             var root = new TreeViewItem { depth = -1 };
 
-            foreach ( var n in m_list )
+            foreach ( var x in m_list )
             {
-                root.AddChild( n );
+                root.AddChild( x );
             }
 
             return root;
