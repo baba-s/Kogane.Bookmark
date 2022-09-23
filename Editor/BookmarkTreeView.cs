@@ -29,6 +29,11 @@ namespace Kogane.Internal
         private BookmarkTreeViewItem[] m_list;
 
         //==============================================================================
+        // 変数(static)
+        //==============================================================================
+        private static GUIContent m_pingIcon;
+
+        //==============================================================================
         // 関数
         //==============================================================================
         /// <summary>
@@ -91,10 +96,9 @@ namespace Kogane.Internal
                 switch ( columnIndex )
                 {
                     case ColumnType.PING:
-                        var name = "eyeDropper.Large";
-                        var icon = EditorGUIUtility.IconContent( name );
+                        m_pingIcon ??= EditorGUIUtility.IconContent( "eyeDropper.Large" );
 
-                        if ( GUI.Button( rect, icon.image, EditorStyles.iconButton ) )
+                        if ( GUI.Button( rect, m_pingIcon.image, EditorStyles.iconButton ) )
                         {
                             EditorGUIUtility.PingObject( asset );
                         }
