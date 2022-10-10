@@ -33,6 +33,14 @@ namespace Kogane.Internal
                     headerContent       = new GUIContent( "Name" ),
                     headerTextAlignment = TextAlignment.Center,
                 },
+                new()
+                {
+                    width               = buttonColumnWidth,
+                    minWidth            = buttonColumnWidth,
+                    maxWidth            = buttonColumnWidth,
+                    headerContent       = new GUIContent( "" ),
+                    headerTextAlignment = TextAlignment.Center,
+                },
             };
 
             this.state = new MultiColumnHeaderState( columns );

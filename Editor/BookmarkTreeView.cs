@@ -21,6 +21,7 @@ namespace Kogane.Internal
         {
             PING,
             NAME,
+            REMOVE,
         }
 
         //==============================================================================
@@ -32,6 +33,7 @@ namespace Kogane.Internal
         // 変数(static)
         //==============================================================================
         private static GUIContent m_pingIcon;
+        private static GUIContent m_removeIcon;
 
         //==============================================================================
         // 関数
@@ -109,6 +111,16 @@ namespace Kogane.Internal
                         EditorGUIUtility.SetIconSize( new Vector2( 16, 16 ) );
                         var label = EditorGUIUtility.ObjectContent( asset, null );
                         EditorGUI.LabelField( rect, label );
+                        break;
+
+                    case ColumnType.REMOVE:
+                        m_removeIcon ??= EditorGUIUtility.IconContent( "eyeDropper.Large" );
+
+                        if ( GUI.Button( rect, m_removeIcon.image, EditorStyles.iconButton ) )
+                        {
+                            BookmarkSetting.instance.Remove( asset );
+                        }
+
                         break;
                 }
             }

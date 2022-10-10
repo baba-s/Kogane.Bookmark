@@ -32,6 +32,12 @@ namespace Kogane.Internal
             Save();
         }
 
+        public void Remove( Object asset )
+        {
+            m_list.Remove( asset );
+            Save();
+        }
+
         public IEnumerator<Object> GetEnumerator()
         {
             return ( ( IEnumerable<Object> )m_list ).GetEnumerator();
