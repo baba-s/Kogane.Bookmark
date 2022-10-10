@@ -12,28 +12,9 @@ namespace Kogane.Internal
     internal sealed class BookmarkTreeView : TreeView
     {
         //==============================================================================
-        // 列挙型
-        //==============================================================================
-        /// <summary>
-        /// 列の種類
-        /// </summary>
-        private enum ColumnType
-        {
-            PING,
-            NAME,
-            REMOVE,
-        }
-
-        //==============================================================================
         // 変数
         //==============================================================================
         private BookmarkTreeViewItem[] m_list;
-
-        //==============================================================================
-        // 変数(static)
-        //==============================================================================
-        private static GUIContent m_pingIcon;
-        private static GUIContent m_removeIcon;
 
         //==============================================================================
         // 関数
@@ -93,30 +74,26 @@ namespace Kogane.Internal
             for ( var i = 0; i < columns; i++ )
             {
                 var rect        = args.GetCellRect( i );
-                var columnIndex = ( ColumnType )args.GetColumn( i );
+                var columnIndex = ( BookmarkColumnType )args.GetColumn( i );
 
                 switch ( columnIndex )
                 {
-                    case ColumnType.PING:
-                        m_pingIcon ??= EditorGUIUtility.IconContent( "eyeDropper.Large" );
-
-                        if ( GUI.Button( rect, m_pingIcon.image, EditorStyles.iconButton ) )
+                    case BookmarkColumnType.PING:
+                        if ( GUI.Button( rect, TextureManager.Get( BookmarkColumnType.PING ), EditorStyles.iconButton ) )
                         {
                             EditorGUIUtility.PingObject( asset );
                         }
 
                         break;
 
-                    case ColumnType.NAME:
+                    case BookmarkColumnType.NAME:
                         EditorGUIUtility.SetIconSize( new Vector2( 16, 16 ) );
                         var label = EditorGUIUtility.ObjectContent( asset, null );
                         EditorGUI.LabelField( rect, label );
                         break;
 
-                    case ColumnType.REMOVE:
-                        m_removeIcon ??= EditorGUIUtility.IconContent( "eyeDropper.Large" );
-
-                        if ( GUI.Button( rect, m_removeIcon.image, EditorStyles.iconButton ) )
+                    case BookmarkColumnType.REMOVE:
+                        if ( GUI.Button( rect, TextureManager.Get( BookmarkColumnType.REMOVE ), EditorStyles.iconButton ) )
                         {
                             BookmarkSetting.instance.Remove( asset );
                         }
