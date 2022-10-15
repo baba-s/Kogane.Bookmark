@@ -47,7 +47,7 @@ namespace Kogane.Internal
             m_list = BookmarkSetting.instance
                     .Where( x => x != null )
                     .Select( ( x, index ) => new BookmarkTreeViewItem( index, x ) )
-                    .DefaultIfEmpty( new BookmarkTreeViewItem( 0, null ) )
+                    .DefaultIfEmpty( new( 0, null ) )
                     .ToArray()
                 ;
 
@@ -87,7 +87,7 @@ namespace Kogane.Internal
                         break;
 
                     case BookmarkColumnType.NAME:
-                        EditorGUIUtility.SetIconSize( new Vector2( 16, 16 ) );
+                        EditorGUIUtility.SetIconSize( new( 16, 16 ) );
                         var label = EditorGUIUtility.ObjectContent( asset, null );
                         EditorGUI.LabelField( rect, label );
                         break;

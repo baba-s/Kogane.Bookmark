@@ -25,12 +25,12 @@ namespace Kogane.Internal
                     width               = buttonColumnWidth,
                     minWidth            = buttonColumnWidth,
                     maxWidth            = buttonColumnWidth,
-                    headerContent       = new GUIContent( "" ),
+                    headerContent       = new( "" ),
                     headerTextAlignment = TextAlignment.Center,
                 },
                 new()
                 {
-                    headerContent       = new GUIContent( "Name" ),
+                    headerContent       = new( "Name" ),
                     headerTextAlignment = TextAlignment.Center,
                 },
                 new()
@@ -38,12 +38,12 @@ namespace Kogane.Internal
                     width               = buttonColumnWidth,
                     minWidth            = buttonColumnWidth,
                     maxWidth            = buttonColumnWidth,
-                    headerContent       = new GUIContent( "" ),
+                    headerContent       = new( "" ),
                     headerTextAlignment = TextAlignment.Center,
                 },
             };
 
-            this.state = new MultiColumnHeaderState( columns );
+            this.state = new( columns );
         }
     }
 }
