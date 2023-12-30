@@ -10,14 +10,14 @@ namespace Kogane.Internal
     /// </summary>
     internal sealed class BookmarkWindow : EditorWindow
     {
-        //==============================================================================
+        //================================================================================
         // 定数(const)
-        //==============================================================================
+        //================================================================================
         private const string SEARCH_STRING_STATE_KEY = "BookmarkWindow_SearchString";
 
-        //==============================================================================
+        //================================================================================
         // 定数(static readonly)
-        //==============================================================================
+        //================================================================================
         private static readonly GUILayoutOption   WIDTH_OPTION  = GUILayout.Width( 16 );
         private static readonly GUILayoutOption   HEIGHT_OPTION = GUILayout.Height( EditorGUIUtility.singleLineHeight );
         private static readonly GUILayoutOption[] OPTIONS       = { WIDTH_OPTION, HEIGHT_OPTION };
